@@ -16,7 +16,7 @@ export const useTextToSpeech = () => {
     setIsSupported(textToSpeech.isSupported())
   }, [])
 
-  const speak = useCallback((text) => {
+  const speak = useCallback((text, language = 'english') => {
     if (!isSupported) {
       console.warn('Text-to-speech not supported')
       return
@@ -25,7 +25,7 @@ export const useTextToSpeech = () => {
     textToSpeech.stop()
     
     const textWithoutEmojis = stripEmojis(text)
-    const utterance = textToSpeech.speak(textWithoutEmojis, gender, speechSpeed)
+    const utterance = textToSpeech.speak(textWithoutEmojis, gender, speechSpeed, language)
     
     utterance.onstart = () => setIsSpeaking(true)
     utterance.onend = () => setIsSpeaking(false)

@@ -61,9 +61,28 @@ const PERSONALITIES = {
   }
 }
 
-export const getSystemPrompt = (userName, aiName, personality) => {
+const LANGUAGE_PROMPTS = {
+  english: 'You MUST respond in English language.',
+  spanish: 'You MUST respond in Spanish (Español) language.',
+  french: 'You MUST respond in French (Français) language.',
+  german: 'You MUST respond in German (Deutsch) language.',
+  italian: 'You MUST respond in Italian (Italiano) language.',
+  portuguese: 'You MUST respond in Portuguese (Português) language.',
+  russian: 'You MUST respond in Russian (Русский) language.',
+  japanese: 'You MUST respond in Japanese (日本語) language.',
+  korean: 'You MUST respond in Korean (한국어) language.',
+  chinese: 'You MUST respond in Chinese (中文) language.',
+  hindi: 'You MUST respond in Hindi (हिन्दी) language.',
+  arabic: 'You MUST respond in Arabic (العربية) language.',
+}
+
+export const getSystemPrompt = (userName, aiName, personality, language = 'english') => {
   const personalityConfig = PERSONALITIES[personality] || PERSONALITIES.friendly
+  const languagePrompt = LANGUAGE_PROMPTS[language] || LANGUAGE_PROMPTS.english
+  
   return `${personalityConfig.systemPrompt}
+
+${languagePrompt}
 
 Your name is ${aiName}.
 The user's name is ${userName}.
@@ -156,7 +175,7 @@ const getApiKey = () => {
   return key.trim().replace(/['"]/g, '')
 }
 
-export const sendMessage = async (message, conversationHistory, userName, aiName, personality) => {
+export const sendMessage = async (message, conversationHistory, userName, aiName, personality, language = 'english') => {
   const apiKey = getApiKey()
   
   if (!apiKey || apiKey.length < 20) {
@@ -164,7 +183,7 @@ export const sendMessage = async (message, conversationHistory, userName, aiName
     return getFallbackResponse(message, personality, userName)
   }
 
-  const systemPrompt = getSystemPrompt(userName, aiName, personality)
+  const systemPrompt = getSystemPrompt(userName, aiName, personality, language)
   
   const messages = [
     { role: 'system', content: systemPrompt },

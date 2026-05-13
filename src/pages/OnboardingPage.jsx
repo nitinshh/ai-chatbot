@@ -4,6 +4,7 @@ import WelcomeScreen from '../components/onboarding/WelcomeScreen'
 import GenderSelection from '../components/onboarding/GenderSelection'
 import AvatarCustomizer from '../components/avatar/AvatarCustomizer'
 import NameSelection from '../components/onboarding/NameSelection'
+import LanguageSelection from '../components/onboarding/LanguageSelection'
 import PersonalitySelection from '../components/onboarding/PersonalitySelection'
 import useAppStore from '../store/useAppStore'
 
@@ -37,6 +38,10 @@ const OnboardingPage = () => {
 
   const handleNameComplete = () => {
     setOnboardingStep(4)
+  }
+
+  const handleLanguageComplete = () => {
+    setOnboardingStep(5)
   }
 
   const handlePersonalityComplete = () => {
@@ -84,6 +89,17 @@ const OnboardingPage = () => {
         )}
 
         {onboardingStep === 4 && (
+          <motion.div
+            key="language"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+          >
+            <LanguageSelection onComplete={handleLanguageComplete} onBack={handleBack} />
+          </motion.div>
+        )}
+
+        {onboardingStep === 5 && (
           <motion.div
             key="personality"
             initial={{ opacity: 0, x: 100 }}

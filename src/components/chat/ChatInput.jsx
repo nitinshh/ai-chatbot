@@ -4,7 +4,7 @@ import { Send, Mic, MicOff } from 'lucide-react'
 import useSpeechRecognition from '../../hooks/useSpeechRecognition'
 import useAppStore from '../../store/useAppStore'
 
-const ChatInput = ({ onSend, disabled }) => {
+const ChatInput = ({ onSend, disabled, disableVoice = false }) => {
   const [message, setMessage] = useState('')
   const [listeningText, setListeningText] = useState('')
   const inputRef = useRef(null)
@@ -74,7 +74,11 @@ const ChatInput = ({ onSend, disabled }) => {
     } else {
       setListeningText('')
       resetTranscript()
-      startListening()
+      try {
+        startListening()
+      } catch (e) {
+        console.log('Already listening')
+      }
     }
   }
 
@@ -95,7 +99,7 @@ const ChatInput = ({ onSend, disabled }) => {
       style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' }}
     >
       <form onSubmit={handleSubmit} className="flex items-center gap-3">
-        {speechSupported && (
+        {speechSupported && !disableVoice && (
           <motion.button
             type="button"
             onClick={handleVoiceClick}

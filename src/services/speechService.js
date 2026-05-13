@@ -74,6 +74,12 @@ class SpeechRecognitionService {
       return
     }
 
+    if (this.isListening && this.recognition) {
+      try {
+        this.recognition.stop()
+      } catch (e) {}
+    }
+
     this.onResult = onResult
     this.onError = onError
     this.onEnd = onEnd
@@ -82,6 +88,9 @@ class SpeechRecognitionService {
     try {
       this.recognition.start()
     } catch (error) {
+      if (error.message?.includes('already started')) {
+        return
+      }
       console.error('Failed to start recognition:', error)
       setTimeout(() => {
         try {
@@ -131,16 +140,43 @@ class TextToSpeechService {
     }
   }
 
-  speak(text, gender = 'female', speed = 1) {
+  getLanguageCode(language) {
+    const langMap = {
+      'english': 'en',
+      'spanish': 'es',
+      'french': 'fr',
+      'german': 'de',
+      'italian': 'it',
+      'portuguese': 'pt',
+      'russian': 'ru',
+      'japanese': 'ja',
+      'korean': 'ko',
+      'chinese': 'zh',
+      'hindi': 'hi',
+      'arabic': 'ar'
+    }
+    return langMap[language] || 'en'
+  }
+
+  speak(text, gender = 'female', speed = 1, language = 'english') {
     this.stop()
     
     const utterance = new SpeechSynthesisUtterance(text)
+    const langCode = this.getLanguageCode(language)
     
-    const selectedVoices = this.voices.filter(voice => 
-      gender === 'female' 
-        ? voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Zira')
-        : voice.name.includes('Male') || voice.name.includes('Daniel') || voice.name.includes('David')
+    // First try to find a voice matching the language
+    let selectedVoices = this.voices.filter(voice => 
+      voice.lang.startsWith(langCode)
     )
+    
+    // If no language-specific voice, fallback to gender
+    if (selectedVoices.length === 0) {
+      selectedVoices = this.voices.filter(voice => 
+        gender === 'female' 
+          ? voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Zira')
+          : voice.name.includes('Male') || voice.name.includes('Daniel') || voice.name.includes('David')
+      )
+    }
 
     if (selectedVoices.length > 0) {
       utterance.voice = selectedVoices[0]
@@ -148,6 +184,9 @@ class TextToSpeechService {
       utterance.voice = this.voices[0]
     }
 
+    // Set the language
+    utterance.lang = langCode
+    
     // Speed: 0.5 = slow, 1 = normal, 2 = fast
     utterance.rate = speed
     utterance.pitch = 1

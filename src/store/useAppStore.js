@@ -11,7 +11,23 @@ const useAppStore = create(
       aiName: '',
       gender: 'female',
       personality: 'friendly',
-      speechSpeed: 1, // 1 = normal, 1.5 = fast
+      speechSpeed: 1,
+      communicationMode: 'text+speak',
+      language: 'english',
+      supportedLanguages: [
+        { code: 'english', name: 'English', nativeName: 'English', flag: '🇺🇸' },
+        { code: 'spanish', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
+        { code: 'french', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
+        { code: 'german', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
+        { code: 'italian', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹' },
+        { code: 'portuguese', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹' },
+        { code: 'russian', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺' },
+        { code: 'japanese', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' },
+        { code: 'korean', name: 'Korean', nativeName: '한국어', flag: '🇰🇷' },
+        { code: 'chinese', name: 'Chinese', nativeName: '中文', flag: '🇨🇳' },
+        { code: 'hindi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳' },
+        { code: 'arabic', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦' },
+      ],
       avatarConfig: {
         faceShape: 0,
         skinTone: 0,
@@ -40,6 +56,8 @@ const useAppStore = create(
       setGender: (gender) => set({ gender }),
       setPersonality: (personality) => set({ personality }),
       setSpeechSpeed: (speed) => set({ speechSpeed: speed }),
+      setCommunicationMode: (mode) => set({ communicationMode: mode }),
+      setLanguage: (language) => set({ language }),
       setAvatarConfig: (config) => set((state) => ({ 
         avatarConfig: { ...state.avatarConfig, ...config } 
       })),
@@ -49,7 +67,8 @@ const useAppStore = create(
         userName: '',
         aiName: '',
         gender: 'female',
-        personality: 'friendly'
+        personality: 'friendly',
+        language: 'english'
       })
     }),
     {
@@ -62,6 +81,8 @@ const useAppStore = create(
         gender: state.gender,
         personality: state.personality,
         speechSpeed: state.speechSpeed,
+        communicationMode: state.communicationMode,
+        language: state.language,
         avatarConfig: state.avatarConfig
       })
     }
